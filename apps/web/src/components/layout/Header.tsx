@@ -172,7 +172,6 @@ function LanguageDropdown({
   onSelect: (lng: 'th' | 'en' | 'zh') => void
 }) {
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
   
   const labelMap: Record<string, { lang: string; country: string }> = {
     th: { lang: 'ไทย', country: 'Thailand' },

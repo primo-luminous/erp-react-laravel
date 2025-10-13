@@ -312,4 +312,4 @@ dump.rdb
 /exports/
 /imports/
 /reports/
-/temp-files/
+/temp-files/.env

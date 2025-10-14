@@ -1,73 +1,16 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
-  HomeIcon,
-  UsersIcon,
-  BuildingOfficeIcon,
-  CogIcon,
-  ChartBarIcon,
-  DocumentTextIcon,
-  ShoppingCartIcon,
-  CurrencyDollarIcon,
-  UserGroupIcon,
   Bars3Icon,
   XMarkIcon,
-  UserIcon,
-  KeyIcon,
   SparklesIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/outline'
 import { cn } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
+import { sidebarMenu } from '../../config/sidebarMenu'
 
-const getNavigation = (t: (key: string) => string) => [
-  { name: t('dashboard'), href: '/', icon: HomeIcon },
-  { name: t('profile'), href: '/profile', icon: UserIcon },
-  { name: t('changePassword'), href: '/change-password', icon: KeyIcon },
-  { name: t('users'), href: '/users', icon: UsersIcon, permission: 'users.view' },
-  {
-    name: t('roles'),
-    href: '/roles',
-    icon: UserGroupIcon,
-    permission: 'roles.view',
-  },
-  {
-    name: t('departments'),
-    href: '/departments',
-    icon: BuildingOfficeIcon,
-    permission: 'departments.view',
-  },
-  {
-    name: t('company'),
-    href: '/company',
-    icon: BuildingOfficeIcon,
-    permission: 'company.view',
-  },
-  {
-    name: t('settings'),
-    href: '/settings',
-    icon: CogIcon,
-    permission: 'settings.view',
-  },
-  { name: t('hr'), href: '/hr', icon: UsersIcon, permission: 'hr.view' },
-  {
-    name: t('accounting'),
-    href: '/accounting',
-    icon: CurrencyDollarIcon,
-    permission: 'accounting.view',
-  },
-  {
-    name: t('sales'),
-    href: '/sales',
-    icon: ShoppingCartIcon,
-    permission: 'sales.view',
-  },
-  {
-    name: t('reports'),
-    href: '/reports',
-    icon: ChartBarIcon,
-    permission: 'reports.view',
-  },
-]
 
 interface SidebarProps {
   userPermissions: string[]
@@ -82,11 +25,27 @@ export function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation()
   const location = useLocation()
-  const navigation = getNavigation(t)
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
 
-  const filteredNavigation = navigation.filter(
-    (item) => !item.permission || userPermissions.includes(item.permission),
-  )
+  // Filter menu groups based on permissions
+  const filteredMenu = sidebarMenu.map(group => ({
+    ...group,
+    children: group.children.filter(
+      (item) => !item.permission || userPermissions.includes(item.permission)
+    )
+  })).filter(group => group.children.length > 0)
+
+  const toggleGroup = (groupLabel: string) => {
+    setExpandedGroups(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(groupLabel)) {
+        newSet.delete(groupLabel)
+      } else {
+        newSet.add(groupLabel)
+      }
+      return newSet
+    })
+  }
 
   return (
     <div
@@ -127,39 +86,82 @@ export function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 relative z-10">
-        {filteredNavigation.map((item) => {
-          const isActive = location.pathname === item.href
+      <nav className="flex-1 px-3 py-4 space-y-1 relative z-10 overflow-y-auto">
+        {filteredMenu.map((group) => {
+          const isGroupExpanded = expandedGroups.has(group.label)
+          const hasActiveChild = group.children.some(child => location.pathname === child.path)
+          
           return (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={cn(
-                'group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden',
-                isActive
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-cyan-400 dark:to-blue-500 text-white shadow-lg'
-                  : 'text-slate-300 hover:bg-slate-700/50 dark:hover:bg-indigo-700/50 hover:text-white hover:translate-x-1',
-              )}
-            >
-              {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 dark:from-cyan-400/20 dark:to-blue-400/20 rounded-xl" />
-              )}
-              <item.icon
+            <div key={group.label} className="space-y-1">
+              {/* Group Header */}
+              <button
+                onClick={() => toggleGroup(group.label)}
                 className={cn(
-                  'h-5 w-5 flex-shrink-0 transition-all duration-200',
-                  isActive
-                    ? 'text-white'
-                    : 'text-slate-400 group-hover:text-white group-hover:scale-110',
-                  collapsed ? 'mx-auto' : 'mr-3',
+                  'group flex items-center w-full px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden',
+                  hasActiveChild
+                    ? 'bg-gradient-to-r from-blue-500/20 to-indigo-500/20 dark:from-cyan-400/20 dark:to-blue-400/20 text-white'
+                    : 'text-slate-300 hover:bg-slate-700/50 dark:hover:bg-indigo-700/50 hover:text-white hover:translate-x-1',
                 )}
-              />
-              {!collapsed && (
-                <span className="relative z-10">{item.name}</span>
+              >
+                <group.icon
+                  className={cn(
+                    'h-5 w-5 flex-shrink-0 transition-all duration-200',
+                    hasActiveChild
+                      ? 'text-white'
+                      : 'text-slate-400 group-hover:text-white group-hover:scale-110',
+                    collapsed ? 'mx-auto' : 'mr-3',
+                  )}
+                />
+                {!collapsed && (
+                  <>
+                    <span className="relative z-10 flex-1 text-left">{t(group.labelKey)}</span>
+                    {isGroupExpanded ? (
+                      <ChevronDownIcon className="h-4 w-4 text-slate-400 group-hover:text-white transition-all duration-200" />
+                    ) : (
+                      <ChevronRightIcon className="h-4 w-4 text-slate-400 group-hover:text-white transition-all duration-200" />
+                    )}
+                  </>
+                )}
+              </button>
+
+              {/* Group Children */}
+              {(!collapsed && isGroupExpanded) && (
+                <div className="ml-4 space-y-1 border-l border-slate-600/30 pl-4">
+                  {group.children.map((item) => {
+                    const isActive = location.pathname === item.path
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={cn(
+                          'group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 relative overflow-hidden',
+                          isActive
+                            ? 'bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-cyan-400 dark:to-blue-500 text-white shadow-lg'
+                            : 'text-slate-300 hover:bg-slate-700/50 dark:hover:bg-indigo-700/50 hover:text-white hover:translate-x-1',
+                        )}
+                      >
+                        {isActive && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 dark:from-cyan-400/20 dark:to-blue-400/20 rounded-lg" />
+                        )}
+                        <item.icon
+                          className={cn(
+                            'h-4 w-4 flex-shrink-0 transition-all duration-200',
+                            isActive
+                              ? 'text-white'
+                              : 'text-slate-400 group-hover:text-white group-hover:scale-110',
+                            'mr-3',
+                          )}
+                        />
+                        <span className="relative z-10">{t(item.nameKey)}</span>
+                        {isActive && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 h-1.5 w-1.5 bg-white rounded-full" />
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
               )}
-              {isActive && !collapsed && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 h-2 w-2 bg-white rounded-full" />
-              )}
-            </Link>
+            </div>
           )
         })}
       </nav>

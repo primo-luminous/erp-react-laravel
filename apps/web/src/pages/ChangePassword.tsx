@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
+// import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom'
 export default function ChangePassword() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { signOut } = useAuth()
+  // const { signOut } = useAuth()
 
   const [formData, setFormData] = useState({
     currentPassword: '',

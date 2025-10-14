@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { margin: 5px; padding: 10px 15px; cursor: pointer; }
+        .thai { background: #ff6b6b; color: white; }
+        .english { background: #4ecdc4; color: white; }
+        .chinese { background: #45b7d1; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Language Test for ERP Dashboard</h1>
+    
+    <div class="test-section">
+        <h2>Current Language</h2>
+        <p id="current-lang">Loading...</p>
+        <button class="thai" onclick="changeLanguage('th')">ไทย</button>
+        <button class="english" onclick="changeLanguage('en')">English</button>
+        <button class="chinese" onclick="changeLanguage('zh')">中文</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Translation Keys</h2>
+        <div id="translations">
+            <p><strong>ERP Dashboard:</strong> <span id="erp-dashboard">Loading...</span></p>
+            <p><strong>Human Resources:</strong> <span id="human-resources">Loading...</span></p>
+            <p><strong>Inventory:</strong> <span id="inventory">Loading...</span></p>
+            <p><strong>Sales:</strong> <span id="sales">Loading...</span></p>
+            <p><strong>Recent Activity:</strong> <span id="recent-activity">Loading...</span></p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Click on language buttons to change language</li>
+            <li>Check if translations update correctly</li>
+            <li>Go to <a href="http://localhost:5173/erp" target="_blank">ERP Dashboard</a> to test real page</li>
+        </ol>
+    </div>
+
+    <script>
+        // Mock i18n for testing
+        const translations = {
+            th: {
+                erpDashboardTitle: 'แดชบอร์ด ERP',
+                humanResources: 'ทรัพยากรบุคคล',
+                inventory: 'คลังสินค้า',
+                sales: 'ขาย',
+                recentActivity: 'กิจกรรมล่าสุด'
+            },
+            en: {
+                erpDashboardTitle: 'ERP Dashboard',
+                humanResources: 'Human Resources',
+                inventory: 'Inventory',
+                sales: 'Sales',
+                recentActivity: 'Recent Activity'
+            },
+            zh: {
+                erpDashboardTitle: 'ERP仪表板',
+                humanResources: '人力资源',
+                inventory: '库存',
+                sales: '销售',
+                recentActivity: '最近活动'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+
+        function updateDisplay() {
+            document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+            
+            const t = translations[currentLang];
+            document.getElementById('erp-dashboard').textContent = t.erpDashboardTitle;
+            document.getElementById('human-resources').textContent = t.humanResources;
+            document.getElementById('inventory').textContent = t.inventory;
+            document.getElementById('sales').textContent = t.sales;
+            document.getElementById('recent-activity').textContent = t.recentActivity;
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            updateDisplay();
+            console.log('Language changed to:', lang);
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>

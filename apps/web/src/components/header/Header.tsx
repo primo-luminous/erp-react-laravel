@@ -1,5 +1,5 @@
 import React from 'react';
-import { LanguageSwitcher, LanguageSwitcherProps, LanguageSwitcherDisplay } from './LanguageSwitcher';
+import { LanguageSwitcher, type LanguageSwitcherProps, LanguageSwitcherDisplay } from './LanguageSwitcher';
 
 export interface HeaderProps {
   title: string;

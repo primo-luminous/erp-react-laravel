@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useCoreAuth } from '../context/CoreAuthContext'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import {
@@ -22,10 +22,11 @@ import { useTranslation } from 'react-i18next'
 
 export default function SignIn() {
   const { t } = useTranslation()
-  const { signIn, loading } = useAuth()
+  const { login } = useCoreAuth()
+  const loading = false // Mock loading state
   const navigate = useNavigate()
   const [email, setEmail] = useState('admin@example.com')
-  const [password, setPassword] = useState('admin1234')
+  const [password, setPassword] = useState('password')
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -33,7 +34,7 @@ export default function SignIn() {
     e.preventDefault()
     setError(null)
     try {
-      await signIn(email, password)
+      await login({ email, password })
       navigate('/')
     } catch (err: any) {
       setError(err?.response?.data?.message ?? t('signInFailed'))

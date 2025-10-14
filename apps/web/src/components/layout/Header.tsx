@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { Link } from 'react-router-dom'
+import { useCoreAuth } from '../../context/CoreAuthContext'
 import {
   BellIcon,
   MagnifyingGlassIcon,
@@ -8,6 +9,8 @@ import {
   ArrowRightOnRectangleIcon,
   SunIcon,
   MoonIcon,
+  UserIcon,
+  KeyIcon,
 } from '@heroicons/react/24/outline'
 import { branding } from '../../config/branding'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +19,7 @@ import { Input } from '../ui/Input'
 
 export function Header() {
   const { i18n, t } = useTranslation()
-  const { user, signOut } = useAuth()
+  const { user, logout } = useCoreAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [notificationCount] = useState(3) // จำนวนการแจ้งเตือน
   const [darkMode, setDarkMode] = useState(() => {
@@ -127,9 +130,27 @@ export function Header() {
                   <p className="text-xs text-slate-500 dark:text-slate-300">{user?.email}</p>
                 </div>
                 <div className="py-1">
+                  <Link
+                    to="/profile"
+                    className="flex items-center w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <UserIcon className="h-4 w-4 mr-3" />
+                    {t('profile')}
+                  </Link>
+                  <Link
+                    to="/change-password"
+                    className="flex items-center w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <KeyIcon className="h-4 w-4 mr-3" />
+                    {t('changePassword')}
+                  </Link>
+                </div>
+                <div className="border-t border-slate-100 dark:border-slate-700 py-1">
                   <Button
                     variant="ghost"
-                    onClick={signOut}
+                    onClick={logout}
                     className="w-full justify-start px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50"
                   >
                     <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />

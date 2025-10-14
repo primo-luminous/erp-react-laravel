@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useCoreAuth } from '../../context/CoreAuthContext'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 
@@ -8,7 +8,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const { user } = useAuth()
+  const { user } = useCoreAuth()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const toggleSidebar = () => {

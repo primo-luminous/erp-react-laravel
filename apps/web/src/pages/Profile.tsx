@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useCoreAuth } from '../context/CoreAuthContext'
 import { api } from '../lib/api'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -38,7 +38,7 @@ interface ProfileData {
 export default function Profile() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
+  const { logout } = useCoreAuth()
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -328,7 +328,7 @@ export default function Profile() {
               <Button
                 variant="outline"
                 className="w-full justify-start text-error-600 hover:text-error-700 hover:bg-error-50"
-                onClick={signOut}
+                onClick={logout}
               >
                 <ArrowRightOnRectangleIcon className="h-4 w-4 mr-2" />
                 {t('signOut')}

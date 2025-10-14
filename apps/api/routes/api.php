@@ -5,6 +5,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
+// Include Core Platform routes
+require_once __DIR__ . '/api/core.php';
+
+// Include ERP routes
+require_once __DIR__ . '/api/erp.php';
+
 Route::prefix('v1')->group(function () {
     Route::post('/login', function (Request $request) {
         $credentials = $request->validate([

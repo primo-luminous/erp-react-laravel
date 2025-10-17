@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/primo-luminous/erp-react-laravel/compare/v1.0.0...v1.1.0) (2025-10-17)
+
+
+### Features
+
+* enhance API and web application with CORS support, new routes, and layout improvements ([d4039e3](https://github.com/primo-luminous/erp-react-laravel/commit/d4039e3d26b67d62c0165022323ab204b50b708e))
+
 # 1.0.0 (2025-10-13)
 
 

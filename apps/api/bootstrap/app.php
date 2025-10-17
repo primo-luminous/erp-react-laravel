@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add CORS middleware to API routes
         $middleware->api(prepend: [
             \App\Http\Middleware\CorsMiddleware::class,
+            \App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

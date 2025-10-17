@@ -12,6 +12,19 @@ require_once __DIR__ . '/api/core.php';
 require_once __DIR__ . '/api/erp.php';
 
 Route::prefix('v1')->group(function () {
+    // Test endpoint
+    Route::get('/test', function () {
+        return response()->json(['message' => 'API is working', 'timestamp' => now()]);
+    });
+    
+    // User management routes
+    Route::apiResource('users', App\Http\Controllers\Api\UserController::class);
+    Route::get('/companies', [App\Http\Controllers\Api\UserController::class, 'getCompanies']);
+    Route::get('/departments', [App\Http\Controllers\Api\UserController::class, 'getDepartments']);
+    Route::get('/roles', [App\Http\Controllers\Api\UserController::class, 'getRoles']);
+    Route::post('/users/{user}/roles', [App\Http\Controllers\Api\UserController::class, 'assignRoles']);
+    Route::get('/users/{user}/roles', [App\Http\Controllers\Api\UserController::class, 'getUserRoles']);
+    
     Route::post('/login', function (Request $request) {
         $credentials = $request->validate([
             'email' => ['required','email'],
@@ -63,6 +76,17 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [App\Http\Controllers\ProfileController::class, 'show']);
             Route::put('/', [App\Http\Controllers\ProfileController::class, 'update']);
             Route::post('/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword']);
+        });
+
+        // Translation routes
+        Route::prefix('translations')->group(function () {
+            Route::get('/locales', [App\Http\Controllers\Api\TranslationController::class, 'getSupportedLocales']);
+            Route::get('/', [App\Http\Controllers\Api\TranslationController::class, 'getTranslation']);
+            Route::post('/', [App\Http\Controllers\Api\TranslationController::class, 'setTranslation']);
+            Route::post('/bulk', [App\Http\Controllers\Api\TranslationController::class, 'setTranslations']);
+            Route::get('/model', [App\Http\Controllers\Api\TranslationController::class, 'getModelTranslations']);
+            Route::get('/stats', [App\Http\Controllers\Api\TranslationController::class, 'getTranslationStats']);
+            Route::delete('/cache', [App\Http\Controllers\Api\TranslationController::class, 'clearCache']);
         });
 
         // Example RBAC protected routes

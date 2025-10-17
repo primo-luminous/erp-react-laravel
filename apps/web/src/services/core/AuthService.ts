@@ -16,6 +16,11 @@ class ApiService {
       headers['Authorization'] = `Bearer ${token}`
     }
 
+    // Add locale headers for translation
+    const currentLocale = localStorage.getItem('i18nextLng') || 'th'
+    headers['Accept-Language'] = currentLocale
+    headers['X-Locale'] = currentLocale
+
     return headers
   }
 

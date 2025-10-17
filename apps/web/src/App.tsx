@@ -8,9 +8,13 @@ import { DashboardPage } from './pages/core/DashboardPage'
 import { UsersPage } from './pages/core/UsersPage'
 import { UserListPage } from './pages/core/UserListPage'
 import { UserCreatePage } from './pages/core/UserCreatePage'
-import { RolesPage } from './pages/core/RolesPage'
-import { ErpDashboard } from './pages/erp/ErpDashboard'
-import { HrDashboard } from './pages/erp/HrDashboard'
+import { RoleListPage } from './pages/core/RoleListPage'
+import { DepartmentListPage } from './pages/core/DepartmentListPage'
+import { ERPDashboardPage } from './pages/erp/ERPDashboardPage'
+import { HRDashboardPage } from './pages/erp/hr/HRDashboardPage'
+import { EmployeeListPage } from './pages/erp/hr/EmployeeListPage'
+import { EmployeeCreatePage } from './pages/erp/hr/EmployeeCreatePage'
+import { DepartmentPositionPage } from './pages/erp/hr/DepartmentPositionPage'
 import { SalesDashboard } from './pages/erp/SalesDashboard'
 import SignIn from './pages/SignIn'
 import Dashboard from './pages/Dashboard'
@@ -59,7 +63,17 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <RolesPage />
+                  <RoleListPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/core/departments"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DepartmentListPage />
                 </Layout>
               </ProtectedRoute>
             }
@@ -71,7 +85,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <ErpDashboard />
+                  <ERPDashboardPage />
                 </Layout>
               </ProtectedRoute>
             }
@@ -81,7 +95,37 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <HrDashboard />
+                  <HRDashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/erp/hr/employees"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EmployeeListPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/erp/hr/employees/create"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EmployeeCreatePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/erp/hr/departments"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DepartmentPositionPage />
                 </Layout>
               </ProtectedRoute>
             }
@@ -103,10 +147,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                     <div className="text-center">
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4">Inventory Dashboard</h1>
-                      <p className="text-gray-600">Coming Soon...</p>
+                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Inventory Dashboard</h1>
+                      <p className="text-gray-600 dark:text-gray-400">Coming Soon...</p>
                     </div>
                   </div>
                 </Layout>
@@ -118,10 +162,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                     <div className="text-center">
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4">Accounting Dashboard</h1>
-                      <p className="text-gray-600">Coming Soon...</p>
+                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Accounting Dashboard</h1>
+                      <p className="text-gray-600 dark:text-gray-400">Coming Soon...</p>
                     </div>
                   </div>
                 </Layout>
@@ -133,10 +177,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                     <div className="text-center">
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4">Finance Dashboard</h1>
-                      <p className="text-gray-600">Coming Soon...</p>
+                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Finance Dashboard</h1>
+                      <p className="text-gray-600 dark:text-gray-400">Coming Soon...</p>
                     </div>
                   </div>
                 </Layout>
@@ -150,10 +194,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                     <div className="text-center">
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4">Car Rental Dashboard</h1>
-                      <p className="text-gray-600">Coming Soon...</p>
+                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Car Rental Dashboard</h1>
+                      <p className="text-gray-600 dark:text-gray-400">Coming Soon...</p>
                     </div>
                   </div>
                 </Layout>
@@ -167,10 +211,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                     <div className="text-center">
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4">Smart Classroom Dashboard</h1>
-                      <p className="text-gray-600">Coming Soon...</p>
+                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Smart Classroom Dashboard</h1>
+                      <p className="text-gray-600 dark:text-gray-400">Coming Soon...</p>
                     </div>
                   </div>
                 </Layout>

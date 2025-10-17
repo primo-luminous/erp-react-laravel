@@ -4,7 +4,7 @@
  * หน้าเพิ่มผู้ใช้ใหม่
  */
 
-import { type FC, useState } from 'react'
+import { type FC, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useCoreAuth } from '../../context/CoreAuthContext'
@@ -12,6 +12,7 @@ import { PermissionGate } from '../../components/core/PermissionGate'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card'
+import { userService, type CreateUserRequest } from '../../services/UserService'
 import {
   ArrowLeftIcon,
   UserIcon,
@@ -51,21 +52,9 @@ export const UserCreatePage: FC = () => {
   const { hasPermission } = useCoreAuth()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  // Mock data for companies and departments
-  const companies: Company[] = [
-    { id: 1, name: 'Enterprise Platform Company' },
-    { id: 2, name: 'Subsidiary Company A' },
-    { id: 3, name: 'Subsidiary Company B' },
-  ]
-
-  const departments: Department[] = [
-    { id: 1, name: 'IT Department' },
-    { id: 2, name: 'HR Department' },
-    { id: 3, name: 'Sales Department' },
-    { id: 4, name: 'Accounting Department' },
-    { id: 5, name: 'Marketing Department' },
-  ]
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [loadingData, setLoadingData] = useState(true)
 
   const [formData, setFormData] = useState<UserFormData>({
     name: '',
@@ -74,10 +63,54 @@ export const UserCreatePage: FC = () => {
     confirmPassword: '',
     position: '',
     employee_id: '',
-    company_id: 1,
-    department_id: 1,
+    company_id: 0,
+    department_id: 0,
     is_active: true,
   })
+
+  // Load companies and departments on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoadingData(true)
+        const [companiesData, departmentsData] = await Promise.all([
+          userService.getCompanies(),
+          userService.getDepartments()
+        ])
+        
+        setCompanies(companiesData)
+        setDepartments(departmentsData)
+        
+        // Set default values
+        if (companiesData.length > 0) {
+          setFormData(prev => ({ ...prev, company_id: companiesData[0].id }))
+        }
+        if (departmentsData.length > 0) {
+          setFormData(prev => ({ ...prev, department_id: departmentsData[0].id }))
+        }
+      } catch (error) {
+        console.error('Error loading data:', error)
+        // Fallback to mock data
+        setCompanies([
+          { id: 1, name: 'Enterprise Platform Company' },
+          { id: 2, name: 'Subsidiary Company A' },
+          { id: 3, name: 'Subsidiary Company B' },
+        ])
+        setDepartments([
+          { id: 1, name: 'IT Department' },
+          { id: 2, name: 'HR Department' },
+          { id: 3, name: 'Sales Department' },
+          { id: 4, name: 'Accounting Department' },
+          { id: 5, name: 'Marketing Department' },
+        ])
+        setFormData(prev => ({ ...prev, company_id: 1, department_id: 1 }))
+      } finally {
+        setLoadingData(false)
+      }
+    }
+
+    loadData()
+  }, [])
 
   const handleInputChange = (field: keyof UserFormData, value: string | number | boolean) => {
     setFormData(prev => ({
@@ -139,17 +172,46 @@ export const UserCreatePage: FC = () => {
     }
 
     setLoading(true)
+    setErrors({})
     
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const userData: CreateUserRequest = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        position: formData.position,
+        employee_id: formData.employee_id,
+        company_id: formData.company_id,
+        department_id: formData.department_id,
+        is_active: formData.is_active,
+      }
       
-      console.log('Creating user:', formData)
+      await userService.createUser(userData)
       
-      // Navigate back to user list
-      navigate('/core/users')
-    } catch (error) {
+      // Navigate back to user list with success message
+      navigate('/core/users', { 
+        state: { message: 'User created successfully!' } 
+      })
+    } catch (error: any) {
       console.error('Error creating user:', error)
+      
+      // Handle validation errors
+      if (error.message && error.message.includes('validation')) {
+        try {
+          const errorData = JSON.parse(error.message)
+          if (errorData.errors) {
+            setErrors(errorData.errors)
+            return
+          }
+        } catch (parseError) {
+          // If parsing fails, show general error
+        }
+      }
+      
+      // Show general error
+      setErrors({ 
+        general: error.message || 'Failed to create user. Please try again.' 
+      })
     } finally {
       setLoading(false)
     }
@@ -185,6 +247,35 @@ export const UserCreatePage: FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">{t('userCreate')}</h1>
           <p className="mt-2 text-gray-600">Create a new user account in the system</p>
         </div>
+
+        {/* General Error */}
+        {errors.general && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+            <div className="flex">
+              <XMarkIcon className="h-5 w-5 text-red-400" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{errors.general}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loadingData && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-md p-4">
+            <div className="flex">
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-blue-800">Loading</h3>
+                <div className="mt-2 text-sm text-blue-700">
+                  <p>Loading companies and departments...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

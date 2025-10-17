@@ -29,11 +29,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               variant === 'default',
             'bg-gradient-to-r from-error-500 to-error-600 hover:from-error-600 hover:to-error-700 text-white shadow-soft hover:shadow-medium active:scale-95':
               variant === 'destructive',
-            'bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200 shadow-soft hover:shadow-medium active:scale-95':
+            'bg-white hover:bg-neutral-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-neutral-700 dark:text-gray-200 border border-neutral-200 dark:border-gray-600 shadow-soft hover:shadow-medium active:scale-95':
               variant === 'outline',
-            'bg-neutral-100 hover:bg-neutral-200 text-neutral-700 shadow-soft hover:shadow-medium active:scale-95':
+            'bg-neutral-100 hover:bg-neutral-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-neutral-700 dark:text-gray-200 shadow-soft hover:shadow-medium active:scale-95':
               variant === 'secondary',
-            'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 active:scale-95':
+            'text-neutral-600 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-700 active:scale-95':
               variant === 'ghost',
             'text-primary-600 underline-offset-4 hover:underline hover:text-primary-700':
               variant === 'link',

@@ -1,7 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCoreAuth } from '../../context/CoreAuthContext'
+import { useTheme } from '../../context/ThemeContext'
 import {
   BellIcon,
   MagnifyingGlassIcon,
@@ -20,25 +21,9 @@ import { Input } from '../ui/Input'
 export function Header() {
   const { i18n, t } = useTranslation()
   const { user, logout } = useCoreAuth()
+  const { isDark, toggleTheme } = useTheme()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [notificationCount] = useState(3) // จำนวนการแจ้งเตือน
-  const [darkMode, setDarkMode] = useState(() => {
-    // ตั้งค่าเริ่มต้นเป็น light mode (กลางวัน)
-    const saved = localStorage.getItem('theme')
-    return saved === 'dark'
-  })
-
-  // ใช้ useEffect เพื่อจัดการ theme
-  useEffect(() => {
-    const root = document.documentElement
-    if (darkMode) {
-      root.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      root.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }, [darkMode])
 
   return (
     <header className="sticky top-0 z-50 glass-enhanced border-b border-slate-200/30 dark:border-slate-700/30 backdrop-blur-xl">
@@ -67,14 +52,14 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleTheme}
             className="hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all duration-200 hover:scale-105"
-            title={darkMode ? t('darkMode') : t('lightMode')}
+            title={isDark ? t('lightMode') : t('darkMode')}
           >
-            {darkMode ? (
-              <MoonIcon className="h-5 w-5 text-white" />
-            ) : (
+            {isDark ? (
               <SunIcon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+            ) : (
+              <MoonIcon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
             )}
           </Button>
 
@@ -118,7 +103,9 @@ export function Header() {
               </div>
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-300">{user?.roles.join(', ')}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-300">
+                  {user?.position || user?.roles?.join(', ')}
+                </p>
               </div>
               <ChevronDownIcon className="h-4 w-4 text-slate-400 dark:text-slate-300" />
             </Button>
@@ -128,6 +115,16 @@ export function Header() {
                 <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-300">{user?.email}</p>
+                  {user?.position && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                      {user.position}
+                    </p>
+                  )}
+                  {user?.department && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      {user.department.name}
+                    </p>
+                  )}
                 </div>
                 <div className="py-1">
                   <Link

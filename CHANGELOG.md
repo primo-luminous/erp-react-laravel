@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/primo-luminous/erp-react-laravel/compare/v1.1.0...v1.2.0) (2025-10-17)
+
+
+### Features
+
+* enhance user model and API with translation support, new routes, and UI improvements ([829ef64](https://github.com/primo-luminous/erp-react-laravel/commit/829ef64ae602c12e13c8013109e99218075d52eb))
+
 # [1.1.0](https://github.com/primo-luminous/erp-react-laravel/compare/v1.0.0...v1.1.0) (2025-10-17)
 
 
